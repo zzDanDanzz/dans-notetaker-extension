@@ -1,6 +1,6 @@
 import { execSync } from "child_process";
 import { existsSync, copyFileSync, rmSync } from "fs";
-let fileNames = ["background", "content"];
+let fileNames = ["background"];
 let SRC_DIR = "src";
 let DEST_DIR = "dist";
 let extensions = {
