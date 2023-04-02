@@ -1,7 +1,7 @@
 import { MemoryRouter, Routes, Route, Router } from "react-router-dom";
-import Notebooks from "../views/notebooks";
-import NotebookDetails from "../views/notebook-details";
-import AddNew from "../views/add-new";
+import Notebooks from "../pages/notebooks";
+import NotebookDetails from "../pages/notebook-details";
+import AddNew from "../pages/add-new";
 
 function Popup() {
   return (
