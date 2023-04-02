@@ -1,12 +1,11 @@
-import { nbs } from "../mock-data";
+import { notebooks } from "../mock-data";
 import { useParams, useNavigate } from "react-router-dom";
 
-let nb = nbs[0];
 
 const NotebookDetails = () => {
   let params = useParams();
   let navigate = useNavigate();
-  let nb = nbs.find((n) => n.id === params.id);
+  let nb = notebooks.find((n) => n.id === params.id);
 
   return (
     <div>
