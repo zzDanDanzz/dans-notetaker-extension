@@ -1,9 +1,10 @@
 import { Button } from "@mantine/core";
 import NotebookCard from "../components/notebook-card";
-import { notebooks } from "../mock-data";
 import { useNavigate } from "react-router-dom";
+import { useNotebooksStore } from "../store";
 
 const Notebooks = () => {
+  const notebooks = useNotebooksStore((s) => s.notebooks);
   let navigate = useNavigate();
   return (
     <div className="flex flex-col items-start gap-3">

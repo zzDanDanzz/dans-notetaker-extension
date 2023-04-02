@@ -1,13 +1,14 @@
 import { Button, TextInput, Textarea } from "@mantine/core";
-import { notebooks } from "../mock-data";
 import { useParams, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
+import { useNotebooksStore } from "../store";
 
 const NotebookDetails = () => {
   const params = useParams();
   const navigate = useNavigate();
-  const notebook = notebooks.find((n) => n.id === params.id);
+  const allNotebooks = useNotebooksStore((s) => s.notebooks);
+  const notebook = allNotebooks.find((n) => n.id === params.id);
   const [content, setContent] = useState(notebook?.content ?? "");
   const [title, setTitle] = useState(notebook?.title ?? "");
 

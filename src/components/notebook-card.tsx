@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 const NotebookCard = ({ notebook }: { notebook: INotebook }) => {
   let navigate = useNavigate();
+  let { title } = notebook;
   return (
     <Button
       variant="outline"
@@ -11,7 +12,7 @@ const NotebookCard = ({ notebook }: { notebook: INotebook }) => {
       fullWidth
       onClick={() => navigate(`/${notebook.id}`)}
     >
-      <span>{notebook.title}</span>
+      <span>{title === "" ? "Untitled" : title}</span>
     </Button>
   );
 };
