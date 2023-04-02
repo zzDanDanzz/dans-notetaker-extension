@@ -8,14 +8,14 @@ const NotebookDetails = () => {
   let nb = notebooks.find((n) => n.id === params.id);
 
   return (
-    <div>
+    <div className="flex flex-col items-start gap-3">
       <Button variant="outline" color="dark" onClick={() => navigate("/")}>
         go back
       </Button>
       {!nb && <div>no nb</div>}
       {nb && (
         <>
-          <h1>{nb.title}</h1>
+          <h1 className="font-bold">{nb.title}</h1>
           <p>{nb.content}</p>
         </>
       )}

@@ -2,7 +2,7 @@ import { Button } from "@mantine/core";
 import { Notebook as INotebook } from "../types";
 import { useNavigate } from "react-router-dom";
 
-const Notebook = ({ notebook }: { notebook: INotebook }) => {
+const NotebookCard = ({ notebook }: { notebook: INotebook }) => {
   let navigate = useNavigate();
   return (
     <Button
@@ -16,4 +16,4 @@ const Notebook = ({ notebook }: { notebook: INotebook }) => {
   );
 };
 
-export default Notebook;
+export default NotebookCard;
