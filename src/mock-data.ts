@@ -1,22 +1,32 @@
-import { Notebook } from "./types";
+import { Notebook, UserSettings } from "./types";
 
-export let nbs: Notebook[] = [
+export let defaultUserSettings: UserSettings = {
+  separator: {
+    before: "...",
+    after: " ",
+  },
+  darkMode: false,
+};
+
+export let notebooks: Notebook[] = [
   {
     id: "1",
-    title: "hi",
+    title: "philosophy",
     content:
-      "helllll lllllll llllllllllll llllllllloooooo o of waeoaweo wef oawfe ",
+      "The other extreme to be avoided, he said, is indulgence in sense pleasures — being possessed by sexual desire, running after fame, eating immoderately, sleeping too much, or chasing after possessions.",
   },
   {
     id: "2",
-    title: "hello",
-    content:
-      "helllll lllllll llllllllllll llllllllloooooo o of waeoaweo wef oawfe ",
+    title: "love",
+    content: "Relationships are meant to be comfort zones, not war zones",
   },
   {
     id: "3",
-    title: "greetings",
-    content:
-      "helllll lllllll llllllllllll llllllllloooooo o of waeoaweo wef oawfe ",
+    title: "lyrics",
+    content: `You've killed the saint in me
+How dare you martyr me?
+
+Unsainted - Slipknot
+`,
   },
 ];
