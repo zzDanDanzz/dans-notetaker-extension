@@ -1,10 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import Popup from "./Popup";
-import {Router} from "react-router-dom";
 import "./styles/global.css";
 
-ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
+if (import.meta.env.DEV) document.body.classList.add("dev-mode");
+
+let root = document.getElementById("root") as HTMLElement;
+
+ReactDOM.createRoot(root).render(
   <React.StrictMode>
     <Popup />
   </React.StrictMode>

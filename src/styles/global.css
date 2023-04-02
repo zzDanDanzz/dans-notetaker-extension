@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html {
+  height: 100%;
+}
+
+.dev-mode {
+  background-color: rgb(26, 26, 26);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
