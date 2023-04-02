@@ -29,7 +29,7 @@ function moveCompiledFiles() {
         let destPath = `${DEST_DIR}/${fileName}${extensions.js}`;
         console.log(`moving ${currPath} to ${destPath}`);
         if (!fileExists(currPath)) {
-            console.error(`${currPath} does not exist`);
+            console.error(`${currPath} does not exist\n`);
             return;
         }
         move(currPath, destPath);
@@ -39,7 +39,7 @@ function move(src, dest) {
     try {
         copyFileSync(src, dest);
         rmSync(src);
-        console.log(`Moved successfully`);
+        console.log(`Moved successfully\n`);
     }
     catch (error) {
         console.error(error);
