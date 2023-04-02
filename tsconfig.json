@@ -17,6 +17,6 @@
     "jsx": "react-jsx"
   },
   "include": ["src"],
-  "exclude": ["src/background.ts"],
+  "exclude": ["src/extension_scripts/background.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

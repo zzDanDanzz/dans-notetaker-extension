@@ -1,7 +1,7 @@
 import { execSync } from "child_process";
 import { existsSync, copyFileSync, rmSync } from "fs";
 let fileNames = ["background"];
-let SRC_DIR = "src";
+let SRC_DIR = "src/extension_scripts";
 let DEST_DIR = "dist";
 let extensions = {
     ts: ".ts",

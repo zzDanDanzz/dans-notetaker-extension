@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import Popup from "./Popup";
+import Popup from "./components/popup";
 import "./styles/global.css";
 
 if (import.meta.env.DEV) document.body.classList.add("dev-mode");
