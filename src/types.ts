@@ -3,3 +3,11 @@ export interface Notebook {
   title: string;
   content: string;
 }
+
+export interface UserSettings {
+  separator: {
+    before: string;
+    after: string;
+  };
+  darkMode: boolean;
+}

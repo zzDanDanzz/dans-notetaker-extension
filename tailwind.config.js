@@ -6,7 +6,11 @@ export default {
 
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        'mantine-dark': "#25262b"
+      }
+    },
   },
   plugins: [],
 }

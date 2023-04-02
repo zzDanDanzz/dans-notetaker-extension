@@ -1,6 +1,6 @@
+import { Button } from "@mantine/core";
 import { notebooks } from "../mock-data";
 import { useParams, useNavigate } from "react-router-dom";
-
 
 const NotebookDetails = () => {
   let params = useParams();
@@ -9,7 +9,9 @@ const NotebookDetails = () => {
 
   return (
     <div>
-      <button onClick={() => navigate("/")}>go back</button>
+      <Button variant="outline" color="dark" onClick={() => navigate("/")}>
+        go back
+      </Button>
       {!nb && <div>no nb</div>}
       {nb && (
         <>
