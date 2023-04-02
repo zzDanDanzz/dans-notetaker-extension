@@ -7,6 +7,7 @@ interface NotebooksState {
 
   updateNotebook: (id: Notebook["id"], newData: Omit<Notebook, "id">) => void;
   addNotebook: (newNotebook: Notebook) => void;
+  retrieveNotebooks: () => Promise<void>;
 }
 
 export const useNotebooksStore = create<NotebooksState>()((set) => ({
@@ -31,5 +32,9 @@ export const useNotebooksStore = create<NotebooksState>()((set) => ({
     set((s) => {
       return { ...s, notebooks: [newNotebook, ...s.notebooks] };
     });
+  },
+  async retrieveNotebooks() {
+    let stateFromStorage = await chrome.storage.local.get("notebookState")
+    console.log("🚀 ~ retrieveNotebooks ~ stateFromStorage", stateFromStorage)
   },
 }));
