@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { Notebook } from "./types";
-import { notebooks } from "./mock-data";
+import { notebooks as mockNotebooks } from "./mock-data";
 
 interface NotebooksState {
   notebooks: Notebook[];
@@ -11,7 +11,7 @@ interface NotebooksState {
 }
 
 export const useNotebooksStore = create<NotebooksState>()((set) => ({
-  notebooks,
+  notebooks: [],
   updateNotebook(id, { title, content }) {
     set((s) => {
       let indexOfUpdated = s.notebooks.findIndex((n) => n.id === id);
@@ -34,7 +34,29 @@ export const useNotebooksStore = create<NotebooksState>()((set) => ({
     });
   },
   async retrieveNotebooks() {
-    let stateFromStorage = await chrome.storage.local.get("notebookState")
-    console.log("🚀 ~ retrieveNotebooks ~ stateFromStorage", stateFromStorage)
+    let result = await getNotebooksFromStorage();
+    if (!result) {
+      await writeNotebooksToStorage();
+      set((prev) => ({ ...prev, notebooks: mockNotebooks }));
+    }
   },
 }));
+
+async function getNotebooksFromStorage(): Promise<Notebook[] | undefined> {
+  if (import.meta.env.DEV) {
+    let ret = localStorage.getItem("notebooks");
+    if (!ret) {
+      return undefined;
+    }
+    return JSON.parse(ret);
+  }
+
+  return (await chrome.storage.local.get(["notebooks"])).notebooks;
+}
+
+function writeNotebooksToStorage() {
+  if (import.meta.env.DEV) {
+    return localStorage.setItem("notebooks", JSON.stringify(mockNotebooks));
+  }
+  return chrome.storage.local.set({ notebooks: mockNotebooks });
+}
