@@ -39,24 +39,35 @@ export const useNotebooksStore = create<NotebooksState>()((set) => ({
       await writeNotebooksToStorage();
       set((prev) => ({ ...prev, notebooks: mockNotebooks }));
     }
+
+    set((prev) => ({ ...prev, notebooks: result }));
   },
 }));
 
 async function getNotebooksFromStorage(): Promise<Notebook[] | undefined> {
   if (import.meta.env.DEV) {
-    let ret = localStorage.getItem("notebooks");
-    if (!ret) {
+    let result = localStorage.getItem("notebooks");
+    console.log("🚀 getNotebooksFromStorage : from localStorage", result);
+    if (!result) {
       return undefined;
     }
-    return JSON.parse(ret);
+    return JSON.parse(result);
   }
 
-  return (await chrome.storage.local.get(["notebooks"])).notebooks;
+  let result = (await chrome.storage.local.get(["notebooks"])).notebooks;
+  console.log("🚀 getNotebooksFromStorage : from chrome storage", result);
+
+  return result;
 }
 
 function writeNotebooksToStorage() {
   if (import.meta.env.DEV) {
-    return localStorage.setItem("notebooks", JSON.stringify(mockNotebooks));
+    let result = localStorage.setItem(
+      "notebooks",
+      JSON.stringify(mockNotebooks)
+    );
+    return result;
   }
-  return chrome.storage.local.set({ notebooks: mockNotebooks });
+  let result = chrome.storage.local.set({ notebooks: mockNotebooks });
+  return result;
 }
