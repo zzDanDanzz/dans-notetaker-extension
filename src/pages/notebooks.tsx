@@ -10,14 +10,17 @@ const Notebooks = () => {
   let navigate = useNavigate();
 
   useEffect(() => {
-    retrieveNotebooks()
+    retrieveNotebooks();
   }, []);
+
   return (
     <div className="flex flex-col items-start gap-3">
       <h1 className="font-bold">Notebooks</h1>
-      {notebooks.map((n) => (
-        <NotebookCard notebook={n} key={n.id} />
-      ))}
+      <div className="flex max-h-64 w-full flex-col items-start gap-3 overflow-y-auto py-2">
+        {notebooks.map((n) => (
+          <NotebookCard notebook={n} key={n.id} />
+        ))}
+      </div>
       <Button variant="outline" color="dark" onClick={() => navigate("/add")}>
         new notebook
       </Button>
