@@ -10,6 +10,7 @@ const NotebookCard = ({ notebook }: { notebook: INotebook }) => {
       variant="outline"
       color="dark"
       fullWidth
+      className="shrink-0"
       onClick={() => navigate(`/${notebook.id}`)}
     >
       <span>{title === "" ? "Untitled" : title}</span>

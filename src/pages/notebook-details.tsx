@@ -1,8 +1,9 @@
-import { Button, TextInput, Textarea } from "@mantine/core";
+import { Button, TextInput } from "@mantine/core";
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import { useNotebooksStore } from "../store";
+import DeleteMenu from "../components/delete-menu";
 
 const NotebookDetails = () => {
   const params = useParams();
@@ -19,6 +20,7 @@ const NotebookDetails = () => {
   let [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState(true);
 
   let updateNotebook = useNotebooksStore((s) => s.updateNotebook);
+  let deleteNotebook = useNotebooksStore((s) => s.deleteNotebook);
 
   useEffect(() => {
     if (title === initialTitle && content === initialContent) {
@@ -31,12 +33,15 @@ const NotebookDetails = () => {
   }, [title, content]);
 
   const update = () => {
-    if (!notebook?.id)
-      throw new Error("Failed trying to update notebook. Invalid id.");
-    updateNotebook(notebook.id, { title, content });
+    updateNotebook(notebook!.id, { title, content });
     setInitialTitle(title);
     setInitialContent(content);
     setIsSaveButtonDisabled(true);
+  };
+
+  const remove = () => {
+    deleteNotebook(notebook!.id);
+    navigate("/");
   };
 
   return (
@@ -60,14 +65,17 @@ const NotebookDetails = () => {
             value={content}
             onChange={(ev) => setContent(ev.target.value)}
           />
-          <Button
-            variant="outline"
-            color="dark"
-            disabled={isSaveButtonDisabled}
-            onClick={update}
-          >
-            Save
-          </Button>
+          <div className="flex w-full items-center justify-between">
+            <Button
+              variant="outline"
+              color="dark"
+              disabled={isSaveButtonDisabled}
+              onClick={update}
+            >
+              Save
+            </Button>
+            <DeleteMenu onDelete={remove} />
+          </div>
         </>
       ) : (
         <div>No notebook with this id :(</div>
