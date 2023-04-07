@@ -1,5 +1,8 @@
 import { Menu, ActionIcon } from "@mantine/core";
-import { IconDotsVertical, IconTrash } from "@tabler/icons-react";
+// @ts-ignore
+import IconDotsVertical from "@tabler/icons-react/dist/esm/icons/IconDotsVertical";
+// @ts-ignore
+import IconTrash from "@tabler/icons-react/dist/esm/icons/IconTrash";
 
 const DeleteMenu = ({ onDelete }: { onDelete: () => void }) => {
   return (
