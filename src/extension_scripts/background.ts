@@ -50,34 +50,52 @@ const main = () => {
   // when the user updates storage
   chrome.storage.onChanged.addListener(({ notebooks }) => {
     const currNotebooks: Notebook[] = notebooks.newValue;
-    const prevNotebooks: Notebook[] = notebooks.oldValue ?? notebooks.newValue;
-    const isFirstStartup = notebooks.oldValue === undefined;
-    if (isFirstStartup) {
-      // because I always add them to the beginning of the notebooks array
+    const prevNotebooks: Notebook[] = notebooks.oldValue;
+
+    const addNewNotebookToMenu = () => {
+      // currNotebooks[0] because I always add them to the beginning of the notebooks array
       let { id, title } = currNotebooks[0];
       createMenuItem(id, title);
+    };
+
+    // it's the first storage change for the extension
+    if (!prevNotebooks && currNotebooks?.length >= 1) {
+      addNewNotebookToMenu();
       return;
     }
-    // const allWereDeleted = !isFirstStartup && notebooks.oldValue.length === 0;
-    let notebookWasAdded = currNotebooks.length > prevNotebooks.length;
-    let notebookWasRemoved = currNotebooks.length < prevNotebooks.length;
-    if (notebookWasAdded) {
-      // because I always add them to the beginning of the notebooks array
-      let { id, title } = currNotebooks[0];
-      createMenuItem(id, title);
+
+    // if notebook was added
+    if (currNotebooks.length > prevNotebooks.length) {
+      addNewNotebookToMenu();
       return;
     }
-    if (notebookWasRemoved) {
-      for (const notebook of prevNotebooks) {
-        let isDeletedNotebook = !currNotebooks.some(
-          (currNotebook) => currNotebook.id === notebook.id
-        );
-        if (isDeletedNotebook) {
-          chrome.contextMenus.remove(notebook.id);
-        }
-      }
+
+    // if notebook was removed
+    if (currNotebooks.length < prevNotebooks.length) {
+      const deletedNotebook = findMissingNotebook({
+        previous: prevNotebooks,
+        current: currNotebooks,
+      });
+      deletedNotebook && chrome.contextMenus.remove(deletedNotebook.id);
     }
   });
+};
+
+const findMissingNotebook = ({
+  previous,
+  current,
+}: {
+  previous: Notebook[];
+  current: Notebook[];
+}) => {
+  for (const notebook of previous) {
+    let isTheMissingNotebook = !current.some(
+      (currNotebook) => currNotebook.id === notebook.id
+    );
+    if (isTheMissingNotebook) {
+      return notebook;
+    }
+  }
 };
 
 main();
