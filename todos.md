@@ -1,0 +1,2 @@
+- [ ] sort the notebooks by last update (display date too)
+- [ ] what is the max items u can display in the context menu? watch over that and list them based off that (and the date)
