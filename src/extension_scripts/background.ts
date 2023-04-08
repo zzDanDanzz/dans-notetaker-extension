@@ -18,6 +18,7 @@ const initiallizeMenuOnFirstInstall = async () => {
   // Add a listener to create the initial context menu items,
   // context menu items only need to be created at runtime.onInstalled
   let notebooks: Notebook[] = await getNotebooksFromStorage();
+  if (!notebooks) return;
   chrome.runtime.onInstalled.addListener(() => {
     for (const { id, title } of notebooks) {
       createMenuItem(id, title);
@@ -51,7 +52,13 @@ const main = () => {
     const currNotebooks: Notebook[] = notebooks.newValue;
     const prevNotebooks: Notebook[] = notebooks.oldValue ?? notebooks.newValue;
     const isFirstStartup = notebooks.oldValue === undefined;
-    const allWereDeleted = notebooks.oldValue.length === 0;
+    if (isFirstStartup) {
+      // because I always add them to the beginning of the notebooks array
+      let { id, title } = currNotebooks[0];
+      createMenuItem(id, title);
+      return;
+    }
+    // const allWereDeleted = !isFirstStartup && notebooks.oldValue.length === 0;
     let notebookWasAdded = currNotebooks.length > prevNotebooks.length;
     let notebookWasRemoved = currNotebooks.length < prevNotebooks.length;
     if (notebookWasAdded) {

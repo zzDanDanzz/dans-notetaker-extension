@@ -16,18 +16,6 @@ export async function getNotebooksFromStorage(): Promise<
   return result;
 }
 
-export function writeMockDataToStorage() {
-  if (import.meta.env.DEV) {
-    let result = localStorage.setItem(
-      "notebooks",
-      JSON.stringify(mockNotebooks)
-    );
-    return result;
-  }
-  let result = chrome.storage.local.set({ notebooks: mockNotebooks });
-  return result;
-}
-
 export function writeDataToStorage(data: Notebook[]) {
   if (import.meta.env.DEV) {
     let result = localStorage.setItem("notebooks", JSON.stringify(data));

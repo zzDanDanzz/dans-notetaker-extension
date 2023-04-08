@@ -1,11 +1,7 @@
 import { create } from "zustand";
 import { Notebook } from "./types";
 import { notebooks as mockNotebooks } from "./mock-data";
-import {
-  writeDataToStorage,
-  getNotebooksFromStorage,
-  writeMockDataToStorage,
-} from "./lib/storage";
+import { writeDataToStorage, getNotebooksFromStorage } from "./lib/storage";
 
 interface NotebooksState {
   notebooks: Notebook[];
@@ -50,10 +46,7 @@ export const useNotebooksStore = create<NotebooksState>()((set, get) => ({
   async retrieveNotebooks() {
     let result = await getNotebooksFromStorage();
 
-    if (!result) {
-      await writeMockDataToStorage();
-      return set((prev) => ({ ...prev, notebooks: mockNotebooks }));
-    }
+    if (!result) return;
 
     set((prev) => ({ ...prev, notebooks: result }));
   },
