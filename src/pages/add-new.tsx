@@ -1,7 +1,7 @@
 import { Button, Input, Textarea } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useNotebooksStore } from "../store";
+import { useNotebooksStore } from "../store/notebooks-store";
 import { v4 as uuid } from "uuid";
 import { Notebook } from "../types";
 

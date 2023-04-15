@@ -1,7 +1,6 @@
 import { create } from "zustand";
-import { Notebook } from "./types";
-import { notebooks as mockNotebooks } from "./mock-data";
-import { writeDataToStorage, getNotebooksFromStorage } from "./lib/storage";
+import { Notebook } from "../types";
+import { writeDataToStorage, getNotebooksFromStorage } from "../lib/storage";
 
 interface NotebooksState {
   notebooks: Notebook[];

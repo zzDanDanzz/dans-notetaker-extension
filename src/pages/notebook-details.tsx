@@ -2,7 +2,7 @@ import { Button, TextInput } from "@mantine/core";
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
-import { useNotebooksStore } from "../store";
+import { useNotebooksStore } from "../store/notebooks-store";
 import DeleteMenu from "../components/delete-menu";
 
 const NotebookDetails = () => {

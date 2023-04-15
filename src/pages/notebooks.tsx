@@ -1,7 +1,7 @@
 import { Button } from "@mantine/core";
 import NotebookCard from "../components/notebook-card";
 import { useNavigate } from "react-router-dom";
-import { useNotebooksStore } from "../store";
+import { useNotebooksStore } from "../store/notebooks-store";
 import { useEffect } from "react";
 
 const Notebooks = () => {

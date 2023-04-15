@@ -2,10 +2,12 @@ import { MemoryRouter, Routes, Route, Router } from "react-router-dom";
 import Notebooks from "../pages/notebooks";
 import NotebookDetails from "../pages/notebook-details";
 import AddNew from "../pages/add-new";
+import Modal from "./modal";
 
 function Popup() {
   return (
-    <div className="w-96 p-4 rounded-lg bg-white">
+    <div className="relative w-96 rounded-lg bg-white p-4">
+      <Modal />
       <MemoryRouter initialEntries={["/"]}>
         <Routes>
           <Route path="/add" element={<AddNew />} />
