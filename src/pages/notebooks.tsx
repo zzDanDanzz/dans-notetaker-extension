@@ -1,24 +1,25 @@
-import { Button, TextInput, ActionIcon } from "@mantine/core";
+import { Button, TextInput } from "@mantine/core";
 import NotebookCard from "../components/notebook-card";
 import { useNavigate } from "react-router-dom";
 import { useNotebooksStore } from "../store/notebooks-store";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo } from "react";
 // @ts-ignore
 import IconSearch from "@tabler/icons-react/dist/esm/icons/IconSearch";
 import Fuse from "fuse.js";
-import { Notebook } from "../types";
+import { atom, useAtom } from "jotai";
+
+let searchStringAtom = atom("");
 
 const Notebooks = () => {
   const notebooks = useNotebooksStore((s) => s.notebooks);
   const retrieveNotebooks = useNotebooksStore((s) => s.retrieveNotebooks);
   let navigate = useNavigate();
-  let [searchString, setSearchString] = useState("");
+  let [searchString, setSearchString] = useAtom(searchStringAtom);
 
-  const fuse = useRef<null | Fuse<Notebook>>(null);
-
-  useEffect(() => {
-    fuse.current = new Fuse(notebooks, { keys: ["title", "content"] });
-  }, [notebooks]);
+  const fuse = useMemo(
+    () => new Fuse(notebooks, { keys: ["title", "content"] }),
+    [notebooks]
+  );
 
   useEffect(() => {
     retrieveNotebooks();
@@ -40,10 +41,9 @@ const Notebooks = () => {
       <div className="flex max-h-64 w-full flex-col items-start gap-3 overflow-y-auto py-2">
         {searchString !== "" ? (
           <>
-            {fuse.current &&
-              fuse.current.search(searchString).map((n) => {
-                return <NotebookCard notebook={n.item} key={n.item.id} />;
-              })}
+            {fuse?.search(searchString).map((n) => {
+              return <NotebookCard notebook={n.item} key={n.item.id} />;
+            })}
           </>
         ) : (
           <>
