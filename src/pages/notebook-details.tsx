@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import { useNotebooksStore } from "../store/notebooks-store";
-import DeleteMenu from "../components/delete-menu";
+import MoreOptionsMenu from "../components/more-options-menu";
 import { useModalsStore } from "../store/modal-store";
 
 const NotebookDetails = () => {
@@ -68,7 +68,7 @@ const NotebookDetails = () => {
             >
               Save
             </Button>
-            <DeleteMenu noteBookId={notebook.id} />
+            <MoreOptionsMenu noteBookId={notebook.id} />
           </div>
         </>
       ) : (

@@ -7,7 +7,7 @@ import { useNotebooksStore } from "../store/notebooks-store";
 import { useNavigate } from "react-router-dom";
 import { useModalsStore } from "../store/modal-store";
 
-const DeleteMenu = ({ noteBookId }: { noteBookId: string }) => {
+const MoreOptionsMenu = ({ noteBookId }: { noteBookId: string }) => {
   let deleteNotebook = useNotebooksStore((s) => s.deleteNotebook);
   const openModal = useModalsStore((s) => s.openModal);
   const navigate = useNavigate();
@@ -68,4 +68,6 @@ const DeleteMenu = ({ noteBookId }: { noteBookId: string }) => {
   );
 };
 
-export default DeleteMenu;
+
+
+export default MoreOptionsMenu;
