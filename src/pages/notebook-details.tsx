@@ -4,12 +4,10 @@ import { useEffect, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import { useNotebooksStore } from "../store/notebooks-store";
 import DeleteMenu from "../components/delete-menu";
-import { useModalsStore } from "../store/modal-store";
 
 const NotebookDetails = () => {
   const params = useParams();
   const navigate = useNavigate();
-  const openModal = useModalsStore((s) => s.openModal);
 
   const allNotebooks = useNotebooksStore((s) => s.notebooks);
   const notebook = allNotebooks.find((n) => n.id === params.id);
@@ -22,7 +20,6 @@ const NotebookDetails = () => {
   let [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState(true);
 
   let updateNotebook = useNotebooksStore((s) => s.updateNotebook);
-  let deleteNotebook = useNotebooksStore((s) => s.deleteNotebook);
 
   useEffect(() => {
     if (title === initialTitle && content === initialContent) {
@@ -40,42 +37,6 @@ const NotebookDetails = () => {
     setInitialContent(content);
     setIsSaveButtonDisabled(true);
   };
-
-  const remove = () => {
-    deleteNotebook(notebook!.id);
-    navigate("/");
-  };
-
-  function openRemoveModal() {
-    openModal((close) => {
-      return (
-        <div className="flex flex-col gap-2">
-          <p>Are you sure you want to remove this note?</p>
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              color="red"
-              onClick={() => {
-                close();
-                remove();
-              }}
-            >
-              Yes
-            </Button>
-            <Button
-              variant="outline"
-              color="dark"
-              onClick={() => {
-                close();
-              }}
-            >
-              No
-            </Button>
-          </div>
-        </div>
-      );
-    });
-  }
 
   return (
     <div className="flex flex-col items-start gap-3">
@@ -107,7 +68,7 @@ const NotebookDetails = () => {
             >
               Save
             </Button>
-            <DeleteMenu onDelete={openRemoveModal} />
+            <DeleteMenu noteBookId={notebook.id} />
           </div>
         </>
       ) : (
