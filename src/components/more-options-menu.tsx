@@ -3,17 +3,43 @@ import { Menu, ActionIcon, Button } from "@mantine/core";
 import IconDotsVertical from "@tabler/icons-react/dist/esm/icons/IconDotsVertical";
 // @ts-ignore
 import IconTrash from "@tabler/icons-react/dist/esm/icons/IconTrash";
+// @ts-ignore
+import IconCopy from "@tabler/icons-react/dist/esm/icons/IconCopy";
 import { useNotebooksStore } from "../store/notebooks-store";
 import { useNavigate } from "react-router-dom";
 import { useModalsStore } from "../store/modal-store";
+import { Notebook } from "../types";
+import { useClipboard } from "@mantine/hooks";
 
-const MoreOptionsMenu = ({ noteBookId }: { noteBookId: string }) => {
-  let deleteNotebook = useNotebooksStore((s) => s.deleteNotebook);
+const MenuItems = {
+  Delete,
+  Copy,
+};
+
+const MoreOptionsMenu = ({ notebook }: { notebook: Notebook }) => {
+  return (
+    <Menu shadow="md" position="top-end">
+      <Menu.Target>
+        <ActionIcon variant="outline" color="dark">
+          <IconDotsVertical size="1.125rem" />
+        </ActionIcon>
+      </Menu.Target>
+
+      <Menu.Dropdown>
+        <MenuItems.Copy notebook={notebook} />
+        <MenuItems.Delete notebook={notebook} />
+      </Menu.Dropdown>
+    </Menu>
+  );
+};
+
+function Delete({ notebook }: { notebook: Notebook }) {
   const openModal = useModalsStore((s) => s.openModal);
+  let deleteNotebook = useNotebooksStore((s) => s.deleteNotebook);
   const navigate = useNavigate();
 
   const delNotebook = () => {
-    deleteNotebook(noteBookId);
+    deleteNotebook(notebook.id);
     navigate("/");
   };
 
@@ -48,26 +74,32 @@ const MoreOptionsMenu = ({ noteBookId }: { noteBookId: string }) => {
     });
   }
   return (
-    <Menu shadow="md" position="top-end">
-      <Menu.Target>
-        <ActionIcon variant="outline" color="dark">
-          <IconDotsVertical size="1.125rem" />
-        </ActionIcon>
-      </Menu.Target>
-
-      <Menu.Dropdown>
-        <Menu.Item
-          color="red"
-          icon={<IconTrash size={14} />}
-          onClick={openDeleteModal}
-        >
-          Delete notebook
-        </Menu.Item>
-      </Menu.Dropdown>
-    </Menu>
+    <Menu.Item
+      color="red"
+      icon={<IconTrash size={14} />}
+      onClick={openDeleteModal}
+    >
+      Delete notebook
+    </Menu.Item>
   );
-};
+}
 
+function Copy({ notebook }: { notebook: Notebook }) {
+  const clipboard = useClipboard();
 
+  function handleCopy() {
+    clipboard.copy(notebook.content);
+  }
+
+  return (
+    <Menu.Item
+      icon={<IconCopy size={14} />}
+      onClick={handleCopy}
+      disabled={!notebook.content}
+    >
+      Copy content
+    </Menu.Item>
+  );
+}
 
 export default MoreOptionsMenu;

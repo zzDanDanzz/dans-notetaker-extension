@@ -68,7 +68,7 @@ const NotebookDetails = () => {
             >
               Save
             </Button>
-            <MoreOptionsMenu noteBookId={notebook.id} />
+            <MoreOptionsMenu notebook={notebook} />
           </div>
         </>
       ) : (
