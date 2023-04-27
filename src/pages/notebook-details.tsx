@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import { useNotebooksStore } from "../store/notebooks-store";
 import DeleteMenu from "../components/delete-menu";
+import { useModalsStore } from "../store/modal-store";
 
 const NotebookDetails = () => {
   const params = useParams();
-  const navigate = useNavigate();
 
   const allNotebooks = useNotebooksStore((s) => s.notebooks);
   const notebook = allNotebooks.find((n) => n.id === params.id);
@@ -40,25 +40,25 @@ const NotebookDetails = () => {
 
   return (
     <div className="flex flex-col items-start gap-3">
-      <Button variant="outline" color="dark" onClick={() => navigate("/")}>
-        go back
-      </Button>
+      <GoBackButton hasMadeChanges={!isSaveButtonDisabled} />
       {notebook ? (
         <>
-          <TextInput
-            placeholder="Title"
-            value={title}
-            className="w-full font-bold"
-            variant="unstyled"
-            onChange={(ev) => setTitle(ev.target.value)}
-          />
-          <TextareaAutosize
-            className="w-full resize-none outline-none"
-            maxRows={8}
-            placeholder="Notebook content"
-            value={content}
-            onChange={(ev) => setContent(ev.target.value)}
-          />
+          <div>
+            <TextInput
+              placeholder="Title"
+              value={title}
+              className="w-full font-bold"
+              variant="unstyled"
+              onChange={(ev) => setTitle(ev.target.value)}
+            />
+            <TextareaAutosize
+              className="w-full resize-none outline-none"
+              maxRows={8}
+              placeholder="Notebook content"
+              value={content}
+              onChange={(ev) => setContent(ev.target.value)}
+            />
+          </div>
           <div className="flex w-full items-center justify-between">
             <Button
               variant="outline"
@@ -77,5 +77,51 @@ const NotebookDetails = () => {
     </div>
   );
 };
+
+function GoBackButton({ hasMadeChanges }: { hasMadeChanges: boolean }) {
+  const navigate = useNavigate();
+  const openModal = useModalsStore((s) => s.openModal);
+
+  function handleGoBack() {
+    if (hasMadeChanges) {
+      openModal((close) => {
+        return (
+          <div className="flex flex-col gap-2">
+            <p>Your unsaved changes will be lost</p>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                color="red"
+                onClick={() => {
+                  close();
+                  navigate("/");
+                }}
+              >
+                OK
+              </Button>
+              <Button
+                variant="outline"
+                color="dark"
+                onClick={() => {
+                  close();
+                }}
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        );
+      });
+    } else {
+      navigate("/");
+    }
+  }
+
+  return (
+    <Button variant="outline" color="dark" onClick={handleGoBack}>
+      go back
+    </Button>
+  );
+}
 
 export default NotebookDetails;
