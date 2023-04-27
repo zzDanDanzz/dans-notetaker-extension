@@ -43,7 +43,7 @@ const NotebookDetails = () => {
       <GoBackButton hasMadeChanges={!isSaveButtonDisabled} />
       {notebook ? (
         <>
-          <div>
+          <div className="w-full">
             <TextInput
               placeholder="Title"
               value={title}
