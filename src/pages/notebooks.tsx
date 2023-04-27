@@ -2,18 +2,23 @@ import { Button, TextInput, ActionIcon } from "@mantine/core";
 import NotebookCard from "../components/notebook-card";
 import { useNavigate } from "react-router-dom";
 import { useNotebooksStore } from "../store/notebooks-store";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 // @ts-ignore
 import IconSearch from "@tabler/icons-react/dist/esm/icons/IconSearch";
+import Fuse from "fuse.js";
+import { Notebook } from "../types";
 
 const Notebooks = () => {
   const notebooks = useNotebooksStore((s) => s.notebooks);
   const retrieveNotebooks = useNotebooksStore((s) => s.retrieveNotebooks);
   let navigate = useNavigate();
   let [searchString, setSearchString] = useState("");
-  let filteredNotebooks = useMemo(() => {
-    return notebooks.filter((n) => n.title.includes(searchString));
-  }, [notebooks, searchString]);
+
+  const fuse = useRef<null | Fuse<Notebook>>(null);
+
+  useEffect(() => {
+    fuse.current = new Fuse(notebooks, { keys: ["title", "content"] });
+  }, [notebooks]);
 
   useEffect(() => {
     retrieveNotebooks();
@@ -35,9 +40,10 @@ const Notebooks = () => {
       <div className="flex max-h-64 w-full flex-col items-start gap-3 overflow-y-auto py-2">
         {searchString !== "" ? (
           <>
-            {filteredNotebooks.map((n) => (
-              <NotebookCard notebook={n} key={n.id} />
-            ))}
+            {fuse.current &&
+              fuse.current.search(searchString).map((n) => {
+                return <NotebookCard notebook={n.item} key={n.item.id} />;
+              })}
           </>
         ) : (
           <>
