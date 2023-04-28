@@ -76,6 +76,7 @@ const Notebooks = () => {
 
 function DeleteAll() {
   const openModal = useModalsStore((s) => s.openModal);
+  const notebooks = useNotebooksStore((s) => s.notebooks);
   const [loading, setloading] = useState(false);
   let deleteEverything = useNotebooksStore((s) => s.deleteEverything);
 
@@ -119,6 +120,7 @@ function DeleteAll() {
       color="red"
       icon={<IconTrash size={14} />}
       onClick={openDeleteModal}
+      disabled={notebooks.length === 0}
     >
       Delete EVERYTHING!
     </Menu.Item>
