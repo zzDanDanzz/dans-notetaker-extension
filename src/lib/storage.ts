@@ -1,5 +1,4 @@
 import { Notebook } from "../types";
-import { notebooks as mockNotebooks } from "../mock-data";
 
 export async function getNotebooksFromStorage(): Promise<
   Notebook[] | undefined

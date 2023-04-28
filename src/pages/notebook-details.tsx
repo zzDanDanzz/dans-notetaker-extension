@@ -32,7 +32,7 @@ const NotebookDetails = () => {
   }, [title, content]);
 
   const update = () => {
-    updateNotebook(notebook!.id, { title, content });
+    updateNotebook({ title, content, id: notebook!.id });
     setInitialTitle(title);
     setInitialContent(content);
     setIsSaveButtonDisabled(true);
@@ -119,7 +119,7 @@ function GoBackButton({ hasMadeChanges }: { hasMadeChanges: boolean }) {
 
   return (
     <Button variant="outline" color="dark" onClick={handleGoBack}>
-      go back
+      Go Back
     </Button>
   );
 }

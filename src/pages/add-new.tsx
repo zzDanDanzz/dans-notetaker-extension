@@ -2,8 +2,6 @@ import { Button, Input, Textarea } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useNotebooksStore } from "../store/notebooks-store";
-import { v4 as uuid } from "uuid";
-import { Notebook } from "../types";
 
 const AddNew = () => {
   let navigate = useNavigate();
@@ -24,20 +22,13 @@ const AddNew = () => {
   }, [title, content]);
 
   const add = () => {
-    let id = uuid();
-    let nb: Notebook = {
-      id,
-      title,
-      content,
-    };
-
-    addNotebook(nb);
-    navigate('/')
+    addNotebook({ title, content });
+    navigate("/");
   };
 
   return (
     <div className="flex flex-col gap-3">
-      <h1 className="font-bold">Add new</h1>
+      <h1 className="font-bold">Add New</h1>
       <Input
         placeholder="Title"
         value={title}

@@ -54,7 +54,7 @@ const Notebooks = () => {
         )}
       </div>
       <Button variant="outline" color="dark" onClick={() => navigate("/add")}>
-        new notebook
+        New Notebook
       </Button>
     </div>
   );

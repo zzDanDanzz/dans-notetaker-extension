@@ -1,15 +1,16 @@
 import { create } from "zustand";
 import { Notebook } from "../types";
 import { writeDataToStorage, getNotebooksFromStorage } from "../lib/storage";
+import { v4 as uuid } from "uuid";
+
+type Create = Omit<Notebook, "id" | "timestamps">;
+type Update = Omit<Notebook, "timestamps">;
 
 interface NotebooksState {
   notebooks: Notebook[];
 
-  updateNotebook: (
-    id: Notebook["id"],
-    newData: Omit<Notebook, "id">
-  ) => Promise<void>;
-  addNotebook: (newNotebook: Notebook) => Promise<void>;
+  updateNotebook: (nb: Update) => Promise<void>;
+  addNotebook: (nb: Create) => Promise<void>;
   retrieveNotebooks: () => Promise<void>;
   deleteNotebook: (id: Notebook["id"]) => Promise<void>;
 }
@@ -17,7 +18,7 @@ interface NotebooksState {
 export const useNotebooksStore = create<NotebooksState>()((set, get) => ({
   notebooks: [],
 
-  async updateNotebook(id, { title, content }) {
+  async updateNotebook({ title, content, id }) {
     let currentState = get();
     let indexOfUpdated = currentState.notebooks.findIndex((n) => n.id === id);
 
@@ -26,7 +27,17 @@ export const useNotebooksStore = create<NotebooksState>()((set, get) => ({
     }
 
     let updatedNotesbooks = currentState.notebooks.map((n) =>
-      n.id === id ? { id: n.id, title, content } : n
+      n.id === id
+        ? {
+            id: n.id,
+            title,
+            content,
+            timestamps: {
+              created: n.timestamps.created,
+              updated: Date.now(),
+            },
+          }
+        : n
     );
 
     await writeDataToStorage(updatedNotesbooks);
@@ -34,8 +45,22 @@ export const useNotebooksStore = create<NotebooksState>()((set, get) => ({
     set({ ...currentState, notebooks: updatedNotesbooks });
   },
 
-  async addNotebook(newNotebook) {
+  async addNotebook({ title, content }) {
     let currentState = get();
+
+    let id = uuid();
+    let now = Date.now();
+
+    let newNotebook = {
+      id,
+      title,
+      content,
+      timestamps: {
+        created: now,
+        updated: now,
+      },
+    };
+
     let updatedNotesbooks = [newNotebook, ...currentState.notebooks];
     await writeDataToStorage(updatedNotesbooks);
 
