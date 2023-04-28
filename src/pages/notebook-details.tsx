@@ -1,10 +1,13 @@
-import { Button, TextInput } from "@mantine/core";
+import { ActionIcon, Button, TextInput } from "@mantine/core";
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import { useNotebooksStore } from "../store/notebooks-store";
 import MoreOptionsMenu from "../components/more-options-menu";
 import { useModalsStore } from "../store/modal-store";
+// @ts-ignore
+import IconChevronLeft from "@tabler/icons-react/dist/esm/icons/IconChevronLeft";
+import Timestamp from "../components/timestamp";
 
 const NotebookDetails = () => {
   const params = useParams();
@@ -40,7 +43,10 @@ const NotebookDetails = () => {
 
   return (
     <div className="flex flex-col items-start gap-3">
-      <GoBackButton hasMadeChanges={!isSaveButtonDisabled} />
+      <div className="flex w-full justify-between ">
+        <GoBackButton hasMadeChanges={!isSaveButtonDisabled} />
+        {notebook && <Timestamp timestamps={notebook.timestamps} />}
+      </div>
       {notebook ? (
         <>
           <div className="w-full">
@@ -48,6 +54,7 @@ const NotebookDetails = () => {
               placeholder="Title"
               value={title}
               className="w-full font-bold"
+              classNames={{ input: "h-auto leading-3" }}
               variant="unstyled"
               onChange={(ev) => setTitle(ev.target.value)}
             />
@@ -118,9 +125,9 @@ function GoBackButton({ hasMadeChanges }: { hasMadeChanges: boolean }) {
   }
 
   return (
-    <Button variant="outline" color="dark" onClick={handleGoBack}>
-      Go Back
-    </Button>
+    <ActionIcon onClick={handleGoBack} variant="outline" color="dark">
+      <IconChevronLeft />
+    </ActionIcon>
   );
 }
 
