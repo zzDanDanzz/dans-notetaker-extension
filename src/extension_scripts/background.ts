@@ -1,7 +1,12 @@
 import { Notebook } from "../types";
+import { timestampSortFn } from "../lib/sort";
 
-const getNotebooksFromStorage = async () =>
-  (await chrome.storage.local.get(["notebooks"])).notebooks;
+const getNotebooksFromStorage = async () => {
+  const notebooks = (await chrome.storage.local.get(["notebooks"])).notebooks;
+  if (!notebooks) return null;
+  (notebooks as Notebook[]).sort(timestampSortFn);
+  return notebooks;
+};
 
 const writeDataToStorage = (data: Notebook[]) =>
   chrome.storage.local.set({ notebooks: data });
@@ -26,6 +31,14 @@ const initiallizeMenuOnFirstInstall = async () => {
   });
 };
 
+const refreshContextMenu = async () => {
+  chrome.contextMenus.removeAll();
+  let notebooks: Notebook[] = await getNotebooksFromStorage();
+  for (const { id, title } of notebooks) {
+    createMenuItem(id, title);
+  }
+};
+
 const addClickListenersToItems = () => {
   chrome.contextMenus.onClicked.addListener(async (item) => {
     const id = item.menuItemId;
@@ -33,7 +46,11 @@ const addClickListenersToItems = () => {
     let notebooks: Notebook[] = await getNotebooksFromStorage();
     let updatedNotebooks = notebooks.map((n) => {
       if (n.id === id) {
-        return { ...n, content: `${n.content} ${textToAdd}` };
+        return {
+          ...n,
+          content: `${n.content} ${textToAdd}`,
+          timestamps: { created: n.timestamps.created, updated: Date.now() },
+        };
       }
       return n;
     });
@@ -46,58 +63,17 @@ const main = () => {
   initiallizeMenuOnFirstInstall();
   addClickListenersToItems();
 
-  // Add or removes the notebook title from context menu
-  // when the user updates storage
+  // refresh context menu when the user updates storage
   chrome.storage.onChanged.addListener(({ notebooks }) => {
     const currNotebooks: Notebook[] = notebooks.newValue;
-    const prevNotebooks: Notebook[] = notebooks.oldValue;
+    const prevNotebooks: Notebook[] | undefined = notebooks.oldValue;
 
-    const addNewNotebookToMenu = async () => {
-      chrome.contextMenus.removeAll();
-      let notebooks: Notebook[] = await getNotebooksFromStorage();
-      for (const { id, title } of notebooks) {
-        createMenuItem(id, title);
-      }
-    };
+    let isFirstStorageChange = !prevNotebooks && currNotebooks?.length >= 1;
 
-    // it's the first storage change for the extension
-    if (!prevNotebooks && currNotebooks?.length >= 1) {
-      addNewNotebookToMenu();
-      return;
-    }
-
-    // if notebook was added
-    if (currNotebooks.length > prevNotebooks.length) {
-      addNewNotebookToMenu();
-      return;
-    }
-
-    // if notebook was removed
-    if (currNotebooks.length < prevNotebooks.length) {
-      const deletedNotebook = findMissingNotebook({
-        previous: prevNotebooks,
-        current: currNotebooks,
-      });
-      deletedNotebook && chrome.contextMenus.remove(deletedNotebook.id);
+    if (isFirstStorageChange || (prevNotebooks && currNotebooks)) {
+      refreshContextMenu();
     }
   });
-};
-
-const findMissingNotebook = ({
-  previous,
-  current,
-}: {
-  previous: Notebook[];
-  current: Notebook[];
-}) => {
-  for (const notebook of previous) {
-    let isTheMissingNotebook = !current.some(
-      (currNotebook) => currNotebook.id === notebook.id
-    );
-    if (isTheMissingNotebook) {
-      return notebook;
-    }
-  }
 };
 
 main();

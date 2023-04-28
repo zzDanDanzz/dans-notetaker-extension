@@ -2,6 +2,8 @@ import { create } from "zustand";
 import { Notebook } from "../types";
 import { writeDataToStorage, getNotebooksFromStorage } from "../lib/storage";
 import { v4 as uuid } from "uuid";
+import { timestampSortFn } from "../lib/sort";
+
 
 type Create = Omit<Notebook, "id" | "timestamps">;
 type Update = Omit<Notebook, "timestamps">;
@@ -71,6 +73,8 @@ export const useNotebooksStore = create<NotebooksState>()((set, get) => ({
     let result = await getNotebooksFromStorage();
 
     if (!result) return;
+
+    result.sort(timestampSortFn);
 
     set((prev) => ({ ...prev, notebooks: result }));
   },
