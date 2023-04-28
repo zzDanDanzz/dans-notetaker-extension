@@ -52,10 +52,12 @@ const main = () => {
     const currNotebooks: Notebook[] = notebooks.newValue;
     const prevNotebooks: Notebook[] = notebooks.oldValue;
 
-    const addNewNotebookToMenu = () => {
-      // currNotebooks[0] because I always add them to the beginning of the notebooks array
-      let { id, title } = currNotebooks[0];
-      createMenuItem(id, title);
+    const addNewNotebookToMenu = async () => {
+      chrome.contextMenus.removeAll();
+      let notebooks: Notebook[] = await getNotebooksFromStorage();
+      for (const { id, title } of notebooks) {
+        createMenuItem(id, title);
+      }
     };
 
     // it's the first storage change for the extension
