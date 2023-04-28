@@ -1,9 +1,12 @@
 import { create } from "zustand";
 import { Notebook } from "../types";
-import { writeDataToStorage, getNotebooksFromStorage } from "../lib/storage";
+import {
+  writeDataToStorage,
+  getNotebooksFromStorage,
+  removeFromStorage,
+} from "../lib/storage";
 import { v4 as uuid } from "uuid";
 import { timestampSortFn } from "../lib/sort";
-
 
 type Create = Omit<Notebook, "id" | "timestamps">;
 type Update = Omit<Notebook, "timestamps">;
@@ -15,6 +18,7 @@ interface NotebooksState {
   addNotebook: (nb: Create) => Promise<void>;
   retrieveNotebooks: () => Promise<void>;
   deleteNotebook: (id: Notebook["id"]) => Promise<void>;
+  deleteEverything: () => Promise<void>;
 }
 
 export const useNotebooksStore = create<NotebooksState>()((set, get) => ({
@@ -85,5 +89,11 @@ export const useNotebooksStore = create<NotebooksState>()((set, get) => ({
     await writeDataToStorage(updatedNotesbooks);
 
     set({ ...currentState, notebooks: updatedNotesbooks });
+  },
+
+  async deleteEverything() {
+    let currentState = get();
+    removeFromStorage();
+    set({ ...currentState, notebooks: [] });
   },
 }));

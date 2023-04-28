@@ -32,11 +32,13 @@ const initiallizeMenuOnFirstInstall = async () => {
 };
 
 const refreshContextMenu = async () => {
-  chrome.contextMenus.removeAll();
-  let notebooks: Notebook[] = await getNotebooksFromStorage();
-  for (const { id, title } of notebooks) {
-    createMenuItem(id, title);
-  }
+  chrome.contextMenus.removeAll(async () => {
+    let notebooks: Notebook[] = await getNotebooksFromStorage();
+    if (!notebooks) return;
+    for (const { id, title } of notebooks) {
+      createMenuItem(id, title);
+    }
+  });
 };
 
 const addClickListenersToItems = () => {
@@ -64,16 +66,7 @@ const main = () => {
   addClickListenersToItems();
 
   // refresh context menu when the user updates storage
-  chrome.storage.onChanged.addListener(({ notebooks }) => {
-    const currNotebooks: Notebook[] = notebooks.newValue;
-    const prevNotebooks: Notebook[] | undefined = notebooks.oldValue;
-
-    let isFirstStorageChange = !prevNotebooks && currNotebooks?.length >= 1;
-
-    if (isFirstStorageChange || (prevNotebooks && currNotebooks)) {
-      refreshContextMenu();
-    }
-  });
+  chrome.storage.onChanged.addListener(refreshContextMenu);
 };
 
 main();

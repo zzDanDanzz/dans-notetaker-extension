@@ -1,14 +1,22 @@
-import { Button, TextInput } from "@mantine/core";
+import { ActionIcon, Button, Menu, TextInput } from "@mantine/core";
 import NotebookCard from "../components/notebook-card";
 import { useNavigate } from "react-router-dom";
 import { useNotebooksStore } from "../store/notebooks-store";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 // @ts-ignore
 import IconSearch from "@tabler/icons-react/dist/esm/icons/IconSearch";
 import Fuse from "fuse.js";
 import { atom, useAtom } from "jotai";
+import MoreOptionsMenu from "../components/more-options-menu";
+import { useModalsStore } from "../store/modal-store";
+// @ts-ignore
+import IconTrash from "@tabler/icons-react/dist/esm/icons/IconTrash";
 
 let searchStringAtom = atom("");
+
+const MenuItems = {
+  DeleteAll,
+};
 
 const Notebooks = () => {
   const notebooks = useNotebooksStore((s) => s.notebooks);
@@ -53,11 +61,68 @@ const Notebooks = () => {
           </>
         )}
       </div>
-      <Button variant="outline" color="dark" onClick={() => navigate("/add")}>
-        New Notebook
-      </Button>
+
+      <div className="flex w-full items-center justify-between">
+        <Button variant="outline" color="dark" onClick={() => navigate("/add")}>
+          New Notebook
+        </Button>
+        <MoreOptionsMenu>
+          <MenuItems.DeleteAll />
+        </MoreOptionsMenu>
+      </div>
     </div>
   );
 };
+
+function DeleteAll() {
+  const openModal = useModalsStore((s) => s.openModal);
+  const [loading, setloading] = useState(false);
+  let deleteEverything = useNotebooksStore((s) => s.deleteEverything);
+
+  function openDeleteModal() {
+    openModal((close) => {
+      return (
+        <div className="flex flex-col gap-2">
+          <p>Are you sure you want to delete EACH AND EVERY notebook??</p>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              color="red"
+              loaderPosition="center"
+              style={{ color: loading ? "transparent" : undefined }}
+              loading={loading}
+              onClick={async () => {
+                setloading(true);
+                await deleteEverything();
+                setloading(false);
+                close();
+              }}
+            >
+              Yes
+            </Button>
+            <Button
+              variant="outline"
+              color="dark"
+              onClick={() => {
+                close();
+              }}
+            >
+              No
+            </Button>
+          </div>
+        </div>
+      );
+    });
+  }
+  return (
+    <Menu.Item
+      color="red"
+      icon={<IconTrash size={14} />}
+      onClick={openDeleteModal}
+    >
+      Delete EVERYTHING!
+    </Menu.Item>
+  );
+}
 
 export default Notebooks;

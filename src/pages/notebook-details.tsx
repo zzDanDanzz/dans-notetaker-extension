@@ -1,4 +1,4 @@
-import { ActionIcon, Button, TextInput } from "@mantine/core";
+import { ActionIcon, Button, Menu, TextInput } from "@mantine/core";
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
@@ -7,7 +7,18 @@ import MoreOptionsMenu from "../components/more-options-menu";
 import { useModalsStore } from "../store/modal-store";
 // @ts-ignore
 import IconChevronLeft from "@tabler/icons-react/dist/esm/icons/IconChevronLeft";
+// @ts-ignore
+import IconTrash from "@tabler/icons-react/dist/esm/icons/IconTrash";
+// @ts-ignore
+import IconCopy from "@tabler/icons-react/dist/esm/icons/IconCopy";
 import Timestamp from "../components/timestamp";
+import { useClipboard } from "@mantine/hooks";
+import { Notebook } from "../types";
+
+const MenuItems = {
+  Delete,
+  Copy,
+};
 
 const NotebookDetails = () => {
   const params = useParams();
@@ -75,7 +86,10 @@ const NotebookDetails = () => {
             >
               Save
             </Button>
-            <MoreOptionsMenu notebook={notebook} />
+            <MoreOptionsMenu>
+              <MenuItems.Copy notebook={notebook} />
+              <MenuItems.Delete notebook={notebook} />
+            </MoreOptionsMenu>
           </div>
         </>
       ) : (
@@ -128,6 +142,75 @@ function GoBackButton({ hasMadeChanges }: { hasMadeChanges: boolean }) {
     <ActionIcon onClick={handleGoBack} variant="outline" color="dark">
       <IconChevronLeft />
     </ActionIcon>
+  );
+}
+
+function Delete({ notebook }: { notebook: Notebook }) {
+  const openModal = useModalsStore((s) => s.openModal);
+  let deleteNotebook = useNotebooksStore((s) => s.deleteNotebook);
+  const navigate = useNavigate();
+
+  const delNotebook = () => {
+    deleteNotebook(notebook.id);
+    navigate("/");
+  };
+
+  function openDeleteModal() {
+    openModal((close) => {
+      return (
+        <div className="flex flex-col gap-2">
+          <p>Are you sure you want to remove this note?</p>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              color="red"
+              onClick={() => {
+                close();
+                delNotebook();
+              }}
+            >
+              Yes
+            </Button>
+            <Button
+              variant="outline"
+              color="dark"
+              onClick={() => {
+                close();
+              }}
+            >
+              No
+            </Button>
+          </div>
+        </div>
+      );
+    });
+  }
+  return (
+    <Menu.Item
+      color="red"
+      icon={<IconTrash size={14} />}
+      onClick={openDeleteModal}
+    >
+      Delete notebook
+    </Menu.Item>
+  );
+}
+
+function Copy({ notebook }: { notebook: Notebook }) {
+  const clipboard = useClipboard();
+
+  function handleCopy() {
+    clipboard.copy(notebook.content);
+  }
+
+  return (
+    <Menu.Item
+      icon={<IconCopy size={14} />}
+      onClick={handleCopy}
+      disabled={!notebook.content}
+    >
+      Copy content
+    </Menu.Item>
   );
 }
 
