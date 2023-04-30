@@ -11,11 +11,16 @@ import MoreOptionsMenu from "../components/more-options-menu";
 import { useModalsStore } from "../store/modal-store";
 // @ts-ignore
 import IconTrash from "@tabler/icons-react/dist/esm/icons/IconTrash";
+// @ts-ignore
+import IconDownload from "@tabler/icons-react/dist/esm/icons/IconDownload";
+import JSZip from "jszip";
+import saveAs from "file-saver";
 
 let searchStringAtom = atom("");
 
 const MenuItems = {
   DeleteAll,
+  DownloadAll,
 };
 
 const Notebooks = () => {
@@ -68,6 +73,7 @@ const Notebooks = () => {
         </Button>
         <MoreOptionsMenu>
           <MenuItems.DeleteAll />
+          <MenuItems.DownloadAll />
         </MoreOptionsMenu>
       </div>
     </div>
@@ -123,6 +129,37 @@ function DeleteAll() {
       disabled={notebooks.length === 0}
     >
       Delete EVERYTHING!
+    </Menu.Item>
+  );
+}
+
+function DownloadAll() {
+  const [loading, setloading] = useState(false);
+  const notebooks = useNotebooksStore((s) => s.notebooks);
+
+  async function handleDownload() {
+    setloading(true);
+    const zip = new JSZip();
+
+    for (const nb of notebooks) {
+      zip.file(`${nb.title || "Untitled"}.txt`, nb.content || "", {
+        date: new Date(nb.timestamps.updated),
+      });
+    }
+
+    await zip.generateAsync({ type: "blob" }).then(function (content) {
+      saveAs(content, `notes_${new Date().toLocaleDateString("en-CA")}.zip`);
+    });
+
+    setloading(false);
+  }
+  return (
+    <Menu.Item
+      icon={<IconDownload size={14} />}
+      onClick={handleDownload}
+      disabled={loading}
+    >
+      Download everything
     </Menu.Item>
   );
 }
