@@ -1,9 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import Popup from "./components/popup";
+import { isDevMode } from "./lib/is-dev-mode";
 import "./styles/global.css";
 
-if (import.meta.env.DEV) document.body.classList.add("dev-mode");
+if (isDevMode()) document.body.classList.add("dev-mode");
 
 let root = document.getElementById("root") as HTMLElement;
 

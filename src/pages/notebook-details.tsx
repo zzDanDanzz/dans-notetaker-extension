@@ -14,6 +14,7 @@ import IconCopy from "@tabler/icons-react/dist/esm/icons/IconCopy";
 import Timestamp from "../components/timestamp";
 import { useClipboard } from "@mantine/hooks";
 import { Notebook } from "../types";
+import MenuItem from "../components/menu-item";
 
 const MenuItems = {
   Delete,
@@ -186,13 +187,13 @@ function Delete({ notebook }: { notebook: Notebook }) {
     });
   }
   return (
-    <Menu.Item
+    <MenuItem
       color="red"
       icon={<IconTrash size={14} />}
       onClick={openDeleteModal}
     >
       Delete notebook
-    </Menu.Item>
+    </MenuItem>
   );
 }
 
@@ -204,13 +205,13 @@ function Copy({ notebook }: { notebook: Notebook }) {
   }
 
   return (
-    <Menu.Item
+    <MenuItem
       icon={<IconCopy size={14} />}
       onClick={handleCopy}
       disabled={!notebook.content}
     >
       Copy content
-    </Menu.Item>
+    </MenuItem>
   );
 }
 

@@ -1,35 +1,66 @@
 import { Notebook } from "../types";
+import { isDevMode } from "./is-dev-mode";
+import { timestampSortFn } from "./sort";
 
-const STORAGE_KEY = "notebooks";
+const NOTEBOOKS_STORAGE_KEY = "notebooks";
+const SEPERATOR_STORAGE_KEY = "seperator";
 
-export async function getNotebooksFromStorage(): Promise<
-  Notebook[] | undefined
-> {
-  if (import.meta.env.DEV) {
-    let result = localStorage.getItem(STORAGE_KEY);
+/** general helper functions */
+export async function getDataFromStorage<T>(
+  key: string
+): Promise<T | undefined> {
+  if (isDevMode()) {
+    let result = localStorage.getItem(key);
     if (!result) {
       return undefined;
     }
     return JSON.parse(result);
   }
 
-  let result = (await chrome.storage.local.get([STORAGE_KEY])).notebooks;
-  return result;
+  return (await chrome.storage.local.get([key]))?.[key];
 }
 
-export function writeDataToStorage(data: Notebook[]) {
-  if (import.meta.env.DEV) {
-    let result = localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    return result;
+export function writeDataToStorage(key: string, value: unknown) {
+  if (isDevMode()) {
+    return localStorage.setItem(key, JSON.stringify(value));
   }
-  let result = chrome.storage.local.set({ notebooks: data });
-  return result;
+  return chrome.storage.local.set({ [key]: value });
 }
 
-export function removeFromStorage() {
-  if (import.meta.env.DEV) {
-    localStorage.removeItem(STORAGE_KEY);
+export function removeDataFromStorage(key: string) {
+  if (isDevMode()) {
+    localStorage.removeItem(key);
   } else {
-    chrome.storage.local.remove(STORAGE_KEY);
+    chrome.storage.local.remove(key);
   }
+}
+
+/** notebook helper functions */
+export function writeNotebooksToStorage(data: Notebook[]) {
+  writeDataToStorage(NOTEBOOKS_STORAGE_KEY, data);
+}
+
+export function removeNotebooksFromStorage() {
+  removeDataFromStorage(NOTEBOOKS_STORAGE_KEY);
+}
+
+export async function getSortedNotebooksFromStorage(): Promise<
+  Notebook[] | undefined
+> {
+  return (await getDataFromStorage<Notebook[]>(NOTEBOOKS_STORAGE_KEY))?.sort(
+    timestampSortFn
+  );
+}
+
+/** seperator helper functions */
+export async function getSeperatorFromStorage() {
+  return (await getDataFromStorage<string>(SEPERATOR_STORAGE_KEY)) ?? "";
+}
+
+export function writeSeperatorToStorage(data: string) {
+  writeDataToStorage(SEPERATOR_STORAGE_KEY, data);
+}
+
+export function removeSeperatorFromStorage() {
+  removeDataFromStorage(SEPERATOR_STORAGE_KEY);
 }

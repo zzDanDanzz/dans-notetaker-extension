@@ -1,8 +1,9 @@
-import { ActionIcon, Button, Menu, TextInput } from "@mantine/core";
-import NotebookCard from "../components/notebook-card";
-import { useNavigate } from "react-router-dom";
-import { useNotebooksStore } from "../store/notebooks-store";
+import { Anchor, Button, TextInput } from "@mantine/core";
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import TextareaAutosize from "react-textarea-autosize";
+import NotebookCard from "../components/notebook-card";
+import { useNotebooksStore } from "../store/notebooks-store";
 // @ts-ignore
 import IconSearch from "@tabler/icons-react/dist/esm/icons/IconSearch";
 import Fuse from "fuse.js";
@@ -11,16 +12,31 @@ import MoreOptionsMenu from "../components/more-options-menu";
 import { useModalsStore } from "../store/modal-store";
 // @ts-ignore
 import IconTrash from "@tabler/icons-react/dist/esm/icons/IconTrash";
+
 // @ts-ignore
 import IconDownload from "@tabler/icons-react/dist/esm/icons/IconDownload";
-import JSZip from "jszip";
+
+// @ts-ignore
+import IconSeparator from "@tabler/icons-react/dist/esm/icons/IconSeparator";
+
+// @ts-ignore
+import IconInfoCircle from "@tabler/icons-react/dist/esm/icons/IconInfoCircle";
+
 import saveAs from "file-saver";
+import JSZip from "jszip";
+import MenuItem from "../components/menu-item";
+import {
+  getSeperatorFromStorage,
+  writeSeperatorToStorage,
+} from "../lib/storage";
 
 let searchStringAtom = atom("");
 
 const MenuItems = {
   DeleteAll,
   DownloadAll,
+  EditSeparator,
+  About,
 };
 
 const Notebooks = () => {
@@ -71,14 +87,107 @@ const Notebooks = () => {
         <Button variant="outline" color="dark" onClick={() => navigate("/add")}>
           New Notebook
         </Button>
+
         <MoreOptionsMenu>
+          <MenuItems.EditSeparator />
           <MenuItems.DeleteAll />
           <MenuItems.DownloadAll />
+          <MenuItems.About />
         </MoreOptionsMenu>
       </div>
     </div>
   );
 };
+
+function About() {
+  const openModal = useModalsStore((s) => s.openModal);
+
+  function openAboutModal() {
+    openModal((close) => {
+      return (
+        <div className="flex flex-col gap-2">
+          <span>
+            made with ❤️ by{" "}
+            <Anchor href="https://zzdandanzz.github.io/" target="_blank">
+              Dan
+            </Anchor>
+          </span>
+          <Button variant="outline" color="dark" type="submit" onClick={close}>
+            Ok
+          </Button>
+        </div>
+      );
+    });
+  }
+  return (
+    <MenuItem
+      style={{ fontSize: "0.75rem" }}
+      icon={<IconInfoCircle size={14} />}
+      onClick={openAboutModal}
+    >
+      About
+    </MenuItem>
+  );
+}
+
+function EditSeparator() {
+  const openModal = useModalsStore((s) => s.openModal);
+  const [separatorDefaultValue, setSeparatorDefaultValue] = useState("");
+
+  useEffect(() => {
+    getSeperatorFromStorage().then((s) => setSeparatorDefaultValue(s));
+  }, []);
+
+  function openEditSeparatorModal() {
+    openModal((close) => {
+      const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const { separator = "" } = Object.fromEntries(
+          new FormData(e.currentTarget)
+        ) as any;
+        writeSeperatorToStorage(separator);
+        close();
+      };
+
+      return (
+        <form onSubmit={onSubmit}>
+          <div className="flex flex-col gap-2">
+            <TextareaAutosize
+              className="w-full resize-none outline-none"
+              maxRows={3}
+              placeholder="separator"
+              name="separator"
+              defaultValue={separatorDefaultValue}
+            />
+            <div className="flex gap-2">
+              <Button variant="outline" color="dark" type="submit">
+                Save
+              </Button>
+              <Button
+                variant="outline"
+                color="dark"
+                onClick={() => {
+                  close();
+                }}
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </form>
+      );
+    });
+  }
+  return (
+    <MenuItem
+      style={{ fontSize: "0.75rem" }}
+      icon={<IconSeparator size={14} />}
+      onClick={openEditSeparatorModal}
+    >
+      Edit separator
+    </MenuItem>
+  );
+}
 
 function DeleteAll() {
   const openModal = useModalsStore((s) => s.openModal);
@@ -122,14 +231,14 @@ function DeleteAll() {
     });
   }
   return (
-    <Menu.Item
+    <MenuItem
       color="red"
       icon={<IconTrash size={14} />}
       onClick={openDeleteModal}
       disabled={notebooks.length === 0}
     >
       Delete EVERYTHING!
-    </Menu.Item>
+    </MenuItem>
   );
 }
 
@@ -154,13 +263,13 @@ function DownloadAll() {
     setloading(false);
   }
   return (
-    <Menu.Item
+    <MenuItem
       icon={<IconDownload size={14} />}
       onClick={handleDownload}
       disabled={loading}
     >
       Download everything
-    </Menu.Item>
+    </MenuItem>
   );
 }
 

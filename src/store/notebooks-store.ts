@@ -1,9 +1,9 @@
 import { create } from "zustand";
 import { Notebook } from "../types";
 import {
-  writeDataToStorage,
-  getNotebooksFromStorage,
-  removeFromStorage,
+  writeNotebooksToStorage,
+  getSortedNotebooksFromStorage,
+  removeNotebooksFromStorage,
 } from "../lib/storage";
 import { v4 as uuid } from "uuid";
 import { timestampSortFn } from "../lib/sort";
@@ -46,7 +46,7 @@ export const useNotebooksStore = create<NotebooksState>()((set, get) => ({
         : n
     );
 
-    await writeDataToStorage(updatedNotesbooks);
+    writeNotebooksToStorage(updatedNotesbooks);
 
     set({ ...currentState, notebooks: updatedNotesbooks });
   },
@@ -68,13 +68,13 @@ export const useNotebooksStore = create<NotebooksState>()((set, get) => ({
     };
 
     let updatedNotesbooks = [newNotebook, ...currentState.notebooks];
-    await writeDataToStorage(updatedNotesbooks);
+    writeNotebooksToStorage(updatedNotesbooks);
 
     set({ ...currentState, notebooks: updatedNotesbooks });
   },
 
   async retrieveNotebooks() {
-    let result = await getNotebooksFromStorage();
+    let result = await getSortedNotebooksFromStorage();
 
     if (!result) return;
 
@@ -86,14 +86,14 @@ export const useNotebooksStore = create<NotebooksState>()((set, get) => ({
   async deleteNotebook(id) {
     let currentState = get();
     let updatedNotesbooks = currentState.notebooks.filter((n) => n.id !== id);
-    await writeDataToStorage(updatedNotesbooks);
+    writeNotebooksToStorage(updatedNotesbooks);
 
     set({ ...currentState, notebooks: updatedNotesbooks });
   },
 
   async deleteEverything() {
     let currentState = get();
-    removeFromStorage();
+    removeNotebooksFromStorage();
     set({ ...currentState, notebooks: [] });
   },
 }));
