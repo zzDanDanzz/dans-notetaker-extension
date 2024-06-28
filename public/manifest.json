@@ -1,12 +1,12 @@
 {
-  "name": "Dan's Chrome Ext",
-  "version": "1.0.0",
-  "description": "Dan made a chrome ext.",
+  "name": "Notebooks",
+  "version": "1.0.1",
+  "description": "a note taker extension with the ability to add any selected text from any website to any notebook of your choice by right clicking on your selection",
   "manifest_version": 3,
   "author": "zzDanDanzz",
   "action": {
     "default_popup": "index.html",
-    "default_title": "Dan's Chrome Ext"
+    "default_title": "Notebooks"
   },
   "icons": {
     "16": "images/icon-16.png",
