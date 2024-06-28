@@ -67,7 +67,7 @@ const Notebooks = () => {
         />
       </div>
 
-      <div className="flex max-h-64 w-full flex-col items-start gap-3 overflow-y-auto py-2">
+      <div className="flex max-h-64 min-h-[9rem] w-full flex-col items-start gap-3 overflow-y-auto py-2">
         {searchString !== "" ? (
           <>
             {fuse?.search(searchString).map((n) => {
