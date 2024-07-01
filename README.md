@@ -26,6 +26,13 @@ Since the extension is not published on the Chrome Web Store, you will need to m
    - Enable Developer mode by toggling the switch in the top right corner.
    - Click on Load unpacked and select the directory where you extracted the files.
 
+## What's Next
+
+I plan on making some improvements I think would be useful (that is when I have some free time after work). examples: 
+
+- a configurable keyboard shortcut that will add the selected text to the most recently modified Notebook without having to open the context menu and select the notebook 
+- being able to import back the notes that you've exported 
+
 ## Contributing
 
 Feel free to contribute to the project by submitting issues or pull requests
