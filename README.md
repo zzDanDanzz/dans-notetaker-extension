@@ -1,5 +1,7 @@
 # Notebooks - Chrome Extension
 
+[![IMAGE ALT TEXT HERE](./yt-video-img.png)](https://www.youtube.com/watch?v=YOUTUBE_VIDEO_ID_HERE)
+
 ## Overview
 
 **Notebooks** is a Chrome extension that will improve your note-taking experience directly in the browser. It provides a interface to create, edit, and manage notebooks. Additionally, it has a unique feature to quickly appending selected text from any webpage to your a notebook of your choice.
