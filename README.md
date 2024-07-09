@@ -1,6 +1,6 @@
 # Notebooks - Chrome Extension
 
-[![IMAGE ALT TEXT HERE](./yt-video-img.png)](https://www.youtube.com/watch?v=YOUTUBE_VIDEO_ID_HERE)
+[![IMAGE ALT TEXT HERE](./yt-video-img.png)](https://www.youtube.com/watch?v=18KBYD-6CTo)
 
 ## Overview
 
