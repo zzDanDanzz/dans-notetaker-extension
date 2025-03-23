@@ -8,10 +8,12 @@
 
 ## Features
 
-- Fuzzy Search: Search through your notebooks by title or content.
-- Context Menu Integration: Quickly add selected text from any webpage to your notebooks via the right-click context menu.
-- Customizable Separator: Define a custom separator to be used when appending new content to existing notebooks.
-- Download: Export all notebooks as plain text files compressed into a zip file.
+- **Privacy-First**: No data is collected or transmitted—your notes stay exclusively in your browser's local storage. The extension is open source, allowing you to verify that no external requests are made.
+- **Fuzzy Search**: Search through your notebooks by title or content.
+- **Context Menu Integration**: Quickly add selected text from any webpage to your notebooks via the right-click context menu.
+- **Customizable Separator**: Define a custom separator to be used when appending new content to existing notebooks.
+- **Local & Portable**: Notes are stored locally, but you can easily export/import them for backup or transfer. *Manual backups are recommended since data isn’t automatically synced.*
+- **Download**: Export all notebooks as plain text files compressed into a zip file.
 
 ## Installation
 
@@ -30,10 +32,11 @@ Since the extension is not published on the Chrome Web Store, you will need to m
 
 ## What's Next
 
-I plan on making some improvements I think would be useful (that is when I have some free time after work). examples: 
+I plan on making some improvements I think would be useful (that is when I have some free time after work). Examples: 
 
-- a configurable keyboard shortcut that will add the selected text to the most recently modified Notebook without having to open the context menu and select the notebook 
-- being able to import back the notes that you've exported 
+- A configurable keyboard shortcut to add selected text to the most recently modified notebook without opening the context menu.
+- Ability to import previously exported notes into the extension.
+- Enhanced **Customizable Separator** with dynamic variables (e.g., `{{D}}` for current date, `{{DT}}` for datetime, `{{SRC}}` for source URL and line number) to auto-populate metadata when appending text.
 
 ## Contributing
 
